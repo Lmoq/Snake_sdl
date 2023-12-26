@@ -1,0 +1,25 @@
+{
+    "code-runner.executorMap": {
+        // custom args
+        // "c": "cd $dir && gcc -std=c17 -I src\\include -L src\\lib -o $fileNameWithoutExt $fileName -lmingw32 -lSDL2 -lSDL2main && $dir$fileNameWithoutExt",
+        "c" : "mingw32-make && snek",
+    },
+    
+    "files.associations": {
+        "sdl.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "stdlib.h": "c",
+        "snake.h": "c",
+        "food.h": "c",
+        "snake_.h": "c",
+        "snake_food.h": "c",
+        "sdl_ttf.h": "c"
+    },
+
+    "editor.fontFamily": "JetBrains Mono ExtraLight, 'Courier New', monospace",
+    "editor.lineHeight": 24,
+    "editor.fontSize": 14.1,
+    "window.zoomLevel": -1,
+        
+}
