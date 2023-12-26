@@ -7,3 +7,5 @@
 **\.a
 **\.la
 **\.dll.a
+
+# Removed all dll files, included only header and src files
