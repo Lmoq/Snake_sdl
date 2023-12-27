@@ -74,7 +74,7 @@ void setup() {
 }
 
 void update() {
-    // Frame limiter
+    // Frame limiter 
     last_frame_time = SDL_GetTicks64();
     time_to_wait = FRAME_TIME - ( SDL_GetTicks64() - last_frame_time );
 
