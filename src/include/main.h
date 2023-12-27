@@ -8,11 +8,16 @@
 #define FRAME_TIME (float)1000 / FPS
 #define WIDTH SIZE * 60
 #define HEIGHT SIZE * 35
+#define PSPEED SIZE * 13
+#define FSPEED PSPEED
 
 #define BLUE 200
 #define GREEN 201
 #define RED 202
 #define ORANGE 203
+#define WHITE 204
+#define PALEWHITE 205
+#define BLACK 206
 
 SDL_Event event;
 SDL_KeyCode keycode;

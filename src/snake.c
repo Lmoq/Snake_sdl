@@ -54,7 +54,7 @@ void initSnake( Snakes *pSnake_ , int p1Color) {
             // Set movement
             head->DIRECTION = DOWN;
             head->BUFFDIR = RIGHT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             break;
 
         case 2:
@@ -64,7 +64,7 @@ void initSnake( Snakes *pSnake_ , int p1Color) {
             // Set movement
             head->DIRECTION = UP;
             head->BUFFDIR = LEFT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             break;
 
         case 3:
@@ -74,7 +74,7 @@ void initSnake( Snakes *pSnake_ , int p1Color) {
             // Set movement
             head->DIRECTION = DOWN;
             head->BUFFDIR = LEFT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             break;
 
         case 4:
@@ -84,7 +84,7 @@ void initSnake( Snakes *pSnake_ , int p1Color) {
             // Set movement
             head->DIRECTION = UP;
             head->BUFFDIR = RIGHT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             break;
     }
 
@@ -158,7 +158,7 @@ void addSnake( Snakes *pSnake_ ) {
             // Set movement
             head->DIRECTION = DOWN;
             head->BUFFDIR = RIGHT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             break;
 
         case 2:
@@ -168,7 +168,7 @@ void addSnake( Snakes *pSnake_ ) {
             // Set movement
             head->DIRECTION = UP;
             head->BUFFDIR = LEFT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             head->COLOR = RED;
             break;
 
@@ -179,7 +179,7 @@ void addSnake( Snakes *pSnake_ ) {
             // Set movement
             head->DIRECTION = DOWN;
             head->BUFFDIR = LEFT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             head->COLOR = ORANGE;
             break;
 
@@ -190,7 +190,7 @@ void addSnake( Snakes *pSnake_ ) {
             // Set movement
             head->DIRECTION = UP;
             head->BUFFDIR = RIGHT;
-            head->SPEED = SIZE * 25;
+            head->SPEED = PSPEED;
             break;
     }
     
@@ -316,7 +316,6 @@ void deleteSnake( Snakes *pSnake_ ) {
 
             // Release all head bodies
             free( prevBody );
-            printf("Freeing snake[%d] bodies total : %d\n", snakeCount, objects);
             objects ++;
         }
         prevHead = head;

@@ -21,7 +21,7 @@ void initFood( Food *food ) {
     food->FoodDIR = DOWN;
     food->FoodBuffDir = LEFT;
 
-    food->FoodSPEED = SIZE * 25;
+    food->FoodSPEED = FSPEED;
 }
 
 void drawFood( Food *food ) {
@@ -51,6 +51,7 @@ void checkFoodhasEaten( Snake *snake, Food *food ) {
 }
 
 void moveFood( Food *food ) {
+    // Moves food based on keyboard input
     if ( !food ) {
         return;
     }
@@ -111,6 +112,7 @@ void foodChunkTurn( Food *food ) {
                 food->LASTLASTDIR = food->LASTDIR;
             }
             break;
+
         case UP: 
             // Upper bound bias 
             if ( food->rect.y % SIZE != 0 ) 
@@ -136,6 +138,7 @@ void foodChunkTurn( Food *food ) {
                 food->LASTLASTDIR = food->LASTDIR;
             }
             break;
+            
         case LEFT:
             // Upper bound bias
             if ( food->rect.x % SIZE != 0 ) 

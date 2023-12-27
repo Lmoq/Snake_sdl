@@ -62,28 +62,18 @@ void setup() {
     // Initilize snake 
     pSnake = malloc( sizeof( *pSnake ) );
     initSnake( pSnake , BLUE);
+
+    // Add players
     for ( int i = 0; i < playerNum; i ++ ) {
         addSnake( pSnake );
     }
-    // addSnake ( pSnake, ORANGE );
 
-    if ( pSnake->snake->nextHead ) {
-        printf("nexthead\n");
-    } else printf("null nexthead\n");
-    
+    // Add food
     pFood = malloc( sizeof( *pFood ));
-    
-    // initHead( pSnake3 , 3);
     initFood( pFood );
-    
 }
 
 void update() {
-    if ( menu ) {
-        update_menu();
-        return;
-    }
-
     // Frame limiter
     last_frame_time = SDL_GetTicks64();
     time_to_wait = FRAME_TIME - ( SDL_GetTicks64() - last_frame_time );
@@ -95,8 +85,13 @@ void update() {
 
     // Calculate delta time
     delta_time = (float) ( SDL_GetTicks64() - last_frame_time ) / 1000.0;
+
+    // Show menu
+    if ( menu ) {
+        return;
+    }
     
-    // Update all snake
+    // Main game update
     moveSnakes( pSnake, pFood );
     
     // Update food
@@ -116,7 +111,6 @@ void render() {
     }
 
     // Buffer objects to draw
-    // drawGrid(renderer);
     drawSnakes( pSnake );
     drawFood( pFood );
 

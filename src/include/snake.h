@@ -33,7 +33,6 @@ typedef struct Snake {
     struct Snake *nextHead;
 } Snake;
 
-
 typedef struct Snakes {
     int numSnakes;  // player count
     Snake *snake;   // player list

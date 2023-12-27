@@ -59,8 +59,8 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
         }
         moveTail( head );
         // Check collisions
-        checkSelfCol( head );
-
+        checkSnakeCol( head , head);
+        checkOtherCol( head );
         checkFoodhasEaten( head, food );
 
         prevHead = head;
@@ -244,16 +244,19 @@ void chunkTurn( Snake *head ) {
         // Left and Right turn
         case DOWN:
             // Lower bound bias
-            if ( head->rect.y % SIZE != 0 ) {
+            if ( head->rect.y % SIZE != 0 ) 
+            {
                 // Check if bottom has passed quarter of the chunk
                 head->rect.y = ( y_coo + SIZE < middle_bound_y + SIZE 
                 && ( head->LASTLASTDIR != RIGHT && head->LASTLASTDIR != LEFT ) ) ?
                 lower_bound_y : upper_bound_y;
             }
             break;
+
         case UP: 
             // Upper bound bias 
-            if ( head->rect.y % SIZE != 0 ) {
+            if ( head->rect.y % SIZE != 0 ) 
+            {
                 head->rect.y = ( y_coo > middle_bound_y 
                 && ( head->LASTLASTDIR != RIGHT && head->LASTLASTDIR != LEFT ) ) ?
                 upper_bound_y : lower_bound_y;
@@ -263,16 +266,19 @@ void chunkTurn( Snake *head ) {
         // Up and Down turn
         case RIGHT:
             // Lower bound bias
-            if ( head->rect.x % SIZE != 0 ) {
+            if ( head->rect.x % SIZE != 0 )
+            {
                 // Check if top right passed quarter of the chunk
                 head->rect.x = ( x_coo + SIZE < middle_bound_x + SIZE 
                 && ( head->LASTLASTDIR != UP && head->LASTLASTDIR != DOWN ) ) ?
                 lower_bound_x : upper_bound_x;
             }
             break;
+
         case LEFT:
             // Upper bound bias
-            if ( head->rect.x % SIZE != 0 ) {
+            if ( head->rect.x % SIZE != 0 ) 
+            {
                 head->rect.x = ( x_coo > middle_bound_x 
                 && ( head->LASTLASTDIR != UP && head->LASTLASTDIR != DOWN ) ) ?
                 upper_bound_x : lower_bound_x;
@@ -281,22 +287,40 @@ void chunkTurn( Snake *head ) {
     }
 }
 
-void checkSelfCol( Snake *head ) {
+void checkSnakeCol( Snake *head, Snake *targetHead ) {
     Snake *body = head->body->body;
     Snake *prev;
 
-    head->pointHead.x = head->rect.x;
-    head->pointHead.y = head->rect.y;
+    targetHead->pointHead.x = targetHead->rect.x;
+    targetHead->pointHead.y = targetHead->rect.y;
+
+    if ( targetHead->COLOR != head->COLOR && SDL_PointInRect( &targetHead->pointHead, &head->rect ) ) {
+        targetHead->snakeDead = true;
+    }
 
     while ( body != NULL ) {
         if ( SDL_PointInRect( &head->pointHead, &body->rect ) == SDL_TRUE ) {
-            head->snakeDead = true;
+            targetHead->snakeDead = true;
         }
         prev = body;
         body = prev->body;
     }
 
-    if ( SDL_PointInRect( &head->pointHead, &head->tail->rect ) == SDL_TRUE ) {
-        head->snakeDead = true;
+    if ( SDL_PointInRect( &targetHead->pointHead, &head->tail->rect ) == SDL_TRUE ) {
+        targetHead->snakeDead = true;
+    }
+}
+
+void checkOtherCol( Snake *head ) {
+    Snake *otherHead = pSnake->snake;
+    Snake *prev = NULL;
+
+    while ( otherHead ) {
+        // Verify otherHead is not self if colors are different
+        if ( head->COLOR != otherHead->COLOR ) {
+            checkSnakeCol( otherHead, head );
+        }
+        prev = otherHead;
+        otherHead = prev->nextHead;
     }
 }

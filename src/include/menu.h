@@ -13,6 +13,7 @@ SDL_Color *text_color;
 
 typedef struct text {
     int option;
+    int rectColor;
     SDL_Surface *surface;
     SDL_Texture *texture;
     SDL_Rect rect;
@@ -21,18 +22,28 @@ typedef struct text {
 } text;
 text *texts ;
 
+text *currentHighlighted;
+
 void initTTF();
+
+// Options texts
 void addText( text **pText, char *string, bool query, int x, int y, int option );
 void createTexture( text *pText, char *string, bool query, int x, int y, int option );
 void setup_menu();
 
+// Listen
 void listen_menu();
-void update_menu();
 
+// Update
+text *getCommand( SDL_Point point, text *pText );
+void checkMousePos( SDL_Point mousepos, text *pText );
+void highlightText( text *pText );
+
+// Render
 void show_texts( text *pText );
 void show_menu();
-int getCommand( SDL_Point point, text *pText );
 
+// Clean up
 void delete_texts( text *pText );
 void quitTTF();
 
