@@ -4,6 +4,23 @@
 #include "snake.h"
 #include "main.h"
 
+// Updates head LASTLASTDIR only after passing a chunk every turn to secure turns
+#define updateTrailsHeadLastdir( body, head, prevBody) \
+do { \
+    moveBodyTrails( body, head ); \
+    updateTail( head ); \
+    body->LASTDIR = prevBody->LASTDIR; \
+    head->LASTLASTDIR = head->LASTDIR; \
+} while (0)
+
+// Update lastdir for tail to follow bodyEnd.lastDir before bodyEnd makes a turn
+#define followTrails( body, head, prevBody ) \
+do { \
+    moveBodyTrails(body, head); \
+    body->LASTDIR = prevBody->LASTDIR; \
+} while (0)
+
+
 //   Snake
 // Allocation and deallocation
 void initSnake( Snakes *pSnake_, int p1Color );

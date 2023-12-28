@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
 
     running = true;
     menu = true;
+    foodAlive = false;
     gameWindow = NULL;
     renderer = NULL;
     pSnake = NULL;
@@ -94,8 +95,8 @@ void update() {
     // Main game update
     moveSnakes( pSnake, pFood );
     
-    // Update food
-    // moveFood( pFood );
+    // Update food movement
+    moveFood( pFood );
 }
 
 void render() {

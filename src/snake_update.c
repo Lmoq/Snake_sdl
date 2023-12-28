@@ -12,12 +12,12 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
     if ( !pSnake_ ) {
         return;
     }
-    int sCount = 0;
 
     Snake *head = pSnake_->snake;
     Snake *prevHead;
 
     while ( head != NULL ) {
+        // Skip dead snakes
         if ( head->snakeDead && head && head->body ) {
             prevHead = head;
             head = prevHead->nextHead;
@@ -40,24 +40,27 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
             head->LASTDIR = head->DIRECTION;
         }
 
-        // Continously move snake head / lead body
+        int pixels = (int) (head->SPEED * delta_time);
+        // Continously move snake head / lead body and tail
         switch ( head->DIRECTION ) {
             case LEFT:
-                head->rect.x -= (int) (head->SPEED * delta_time);
+                head->rect.x -= pixels;
                 break;
             case RIGHT:
-                head->rect.x += (int) (head->SPEED * delta_time);
+                head->rect.x += pixels;
                 break;
             case UP:
-                head->rect.y -= (int) (head->SPEED * delta_time);
+                head->rect.y -= pixels;
                 break;
             case DOWN:
-                head->rect.y += (int) (head->SPEED * delta_time);
+                head->rect.y += pixels;
                 break;
+
             default:
                 break;
         }
         moveTail( head );
+
         // Check collisions
         checkSnakeCol( head , head);
         checkOtherCol( head );
@@ -65,10 +68,7 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
 
         prevHead = head;
         head = prevHead->nextHead;
-        sCount ++;
     }
-
-    // printf("Scount : %d\n", sCount);
 }
 
 void moveBody( Snake *head ) {
@@ -83,46 +83,30 @@ void moveBody( Snake *head ) {
                 // Ensures body trails can only move chunk by chunk
                 body->rect.x -= SIZE;
 
-                // Sync body trails and tail
-                moveBodyTrails( body, head );
-                updateTail( head );
-                head->LASTLASTDIR = head->LASTDIR;
-
-                // Update lastdir after all trails have been updated
-                body->LASTDIR = prevBody->LASTDIR;
+                // Sync body trails and tail to head
+                // And updates head LASTLASTDIR only after passing a chunk after turns
+                updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
 
         case RIGHT:
             if ( prevBody->rect.x >= body->rect.x + SIZE ) {
                 body->rect.x += SIZE;
-      
-                moveBodyTrails( body, head );
-                updateTail( head );
-                head->LASTLASTDIR = head->LASTDIR;
-                body->LASTDIR = prevBody->LASTDIR;
+                updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
 
         case UP:
             if ( prevBody->rect.y + SIZE <= body->rect.y ) {
                 body->rect.y -= SIZE;
-      
-                moveBodyTrails( body, head );
-                updateTail( head );
-                head->LASTLASTDIR = head->LASTDIR;
-                body->LASTDIR = prevBody->LASTDIR;
+                updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
 
         case DOWN:
             if ( prevBody->rect.y >= body->rect.y + SIZE ) {
                 body->rect.y += SIZE;
-      
-                moveBodyTrails( body, head );
-                updateTail( head );
-                head->LASTLASTDIR = head->LASTDIR;
-                body->LASTDIR = prevBody->LASTDIR;
+                updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
 
@@ -140,30 +124,24 @@ void moveBodyTrails( Snake *body, Snake *head ) {
         switch ( prevBody->LASTDIR ) {
             case LEFT:
                 body_body->rect.x -= SIZE;
-                moveBodyTrails( body_body, head );
-                // Update lastdir for tail to follow bodyEnd.lastDir before bodyEnd makes a turn
-                body_body->LASTDIR = prevBody->LASTDIR;
+                // Makes sures succeeding trails will follow before updating body lastdir
+                // So they will only turn at a specific chunk
+                followTrails( body_body, head, prevBody );
                 break;
 
             case RIGHT:
                 body_body->rect.x += SIZE;
-                moveBodyTrails( body_body, head );
-
-                body_body->LASTDIR = prevBody->LASTDIR;
+                followTrails( body_body, head, prevBody );
                 break;
 
             case UP:
                 body_body->rect.y -= SIZE;
-                moveBodyTrails( body_body, head );
-
-                body_body->LASTDIR = prevBody->LASTDIR;
+                followTrails( body_body, head, prevBody );
                 break;
 
             case DOWN:
                 body_body->rect.y += SIZE;
-                moveBodyTrails( body_body, head );
-
-                body_body->LASTDIR = prevBody->LASTDIR;
+                followTrails( body_body, head, prevBody );
                 break;
 
             default:
@@ -181,19 +159,21 @@ void moveTail( Snake *head ){
     if (head->tail->rect.x != head->bodyEnd->rect.x || 
         head->tail->rect.y != head->bodyEnd->rect.y) 
     {
+        int pixels = (int) (head->SPEED * delta_time);
         switch ( head->bodyEnd->LASTDIR ) {
             case LEFT:
-                head->tail->rect.x -= (int) (head->SPEED * delta_time);
+                head->tail->rect.x -= pixels;
                 break;
             case RIGHT:
-                head->tail->rect.x += (int) (head->SPEED * delta_time);
+                head->tail->rect.x += pixels;
                 break;
             case UP:
-                head->tail->rect.y -= (int) (head->SPEED * delta_time);
+                head->tail->rect.y -= pixels;
                 break;
             case DOWN:
-                head->tail->rect.y += (int) (head->SPEED * delta_time);
+                head->tail->rect.y += pixels;
                 break;
+
             default:
                 break;
         }
@@ -207,14 +187,17 @@ void updateTail( Snake *head ) {
             head->tail->rect.x = head->bodyEnd->rect.x + SIZE;
             head->tail->rect.y = head->bodyEnd->rect.y;
             break;
+
         case RIGHT:
             head->tail->rect.x = head->bodyEnd->rect.x - SIZE;
             head->tail->rect.y = head->bodyEnd->rect.y;
             break;
+
         case UP:
             head->tail->rect.x = head->bodyEnd->rect.x;
             head->tail->rect.y = head->bodyEnd->rect.y + SIZE;
             break;
+
         case DOWN:
             head->tail->rect.x = head->bodyEnd->rect.x;
             head->tail->rect.y = head->bodyEnd->rect.y - SIZE;
@@ -247,6 +230,8 @@ void chunkTurn( Snake *head ) {
             if ( head->rect.y % SIZE != 0 ) 
             {
                 // Check if bottom has passed quarter of the chunk
+                // This will choose opposite if lastlastdir is parallel to current direction
+                // To ensure turns will not make head run over the body
                 head->rect.y = ( y_coo + SIZE < middle_bound_y + SIZE 
                 && ( head->LASTLASTDIR != RIGHT && head->LASTLASTDIR != LEFT ) ) ?
                 lower_bound_y : upper_bound_y;
@@ -294,29 +279,33 @@ void checkSnakeCol( Snake *head, Snake *targetHead ) {
     targetHead->pointHead.x = targetHead->rect.x;
     targetHead->pointHead.y = targetHead->rect.y;
 
+    // Check if head touched another snake head
     if ( targetHead->COLOR != head->COLOR && SDL_PointInRect( &targetHead->pointHead, &head->rect ) ) {
         targetHead->snakeDead = true;
     }
 
+    // Check if head touched a its own or others body
     while ( body != NULL ) {
-        if ( SDL_PointInRect( &head->pointHead, &body->rect ) == SDL_TRUE ) {
+        if ( SDL_PointInRect( &targetHead->pointHead, &body->rect ) ) {
             targetHead->snakeDead = true;
         }
         prev = body;
         body = prev->body;
     }
 
-    if ( SDL_PointInRect( &targetHead->pointHead, &head->tail->rect ) == SDL_TRUE ) {
+    // Check if target head touch its own or other tail
+    if ( SDL_PointInRect( &targetHead->pointHead, &head->tail->rect ) ) {
         targetHead->snakeDead = true;
     }
 }
 
 void checkOtherCol( Snake *head ) {
+    // Check collition with other snake head
     Snake *otherHead = pSnake->snake;
     Snake *prev = NULL;
 
     while ( otherHead ) {
-        // Verify otherHead is not self if colors are different
+        // They are different snake if they have different COLOR
         if ( head->COLOR != otherHead->COLOR ) {
             checkSnakeCol( otherHead, head );
         }

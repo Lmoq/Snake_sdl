@@ -11,31 +11,15 @@
 //  Render
 void drawSnakes( Snakes *pSnake_ ) {
     if (!pSnake_) {
-        // printf("No list\n");
         return;
     }
 
     Snake *head = pSnake_->snake;
     Snake *prevHead;
 
-    int snakeCount = 0;
-
     while ( head != NULL ) {
-        // Draw head
-        switch ( head->COLOR ) {
-            case BLUE:
-                SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
-                break;
-            case RED:
-                SDL_SetRenderDrawColor( renderer, 255, 0, 0, 255 );
-                break;
-            case ORANGE:
-                SDL_SetRenderDrawColor( renderer, 255, 165, 0, 255 );
-                break;
-            case GREEN:
-                SDL_SetRenderDrawColor( renderer, 0, 255, 0, 255 );
-                break;
-        }
+        // Use snake color for render
+        setRenderColor( head->COLOR );
 
         // Draw heads
         SDL_RenderDrawRect( renderer, &head->rect );
@@ -51,7 +35,6 @@ void drawSnakes( Snakes *pSnake_ ) {
 
         prevHead = head;
         head = prevHead->nextHead;
-        snakeCount ++;
     } 
 
 }
@@ -67,23 +50,39 @@ void drawTrails( Snake *head, int color ) {
 
     while ( body != NULL ) {
         // Render color
-        switch ( color ) {
-            case BLUE:
-                SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
-                break;
-            case RED:
-                SDL_SetRenderDrawColor( renderer, 255, 0, 0, 255 );
-                break;
-            case ORANGE:
-                SDL_SetRenderDrawColor( renderer, 255, 165, 0, 255 );
-                break;
-            case GREEN:
-                SDL_SetRenderDrawColor( renderer, 0, 255, 0, 255 );
-                break;
-        }
+        setRenderColor( body->COLOR );
         SDL_RenderDrawRect( renderer, &body->rect );
         // SDL_RenderFillRect( renderer, &body->rect );
+
         prevBody = body;
         body = prevBody->body;
+    }
+}
+
+void setRenderColor( int COLOR ) {
+    switch ( COLOR ) {
+        case BLUE: 
+            setRenderColorBLUE;
+            break;
+        case RED:
+            setRenderColorRED;
+            break;
+        case ORANGE:
+            setRenderColorORANGE;
+            break;
+        case GREEN:
+            setRenderColorGREEN;
+            break;
+        case WHITE:
+            setRenderColorWHITE;
+            break;
+        case PALEWHITE:
+            setRenderColorPALEWHITE;
+            break;
+        case BLACK:
+            setRenderColorBLACK;
+            break;
+        default:
+            break;
     }
 }

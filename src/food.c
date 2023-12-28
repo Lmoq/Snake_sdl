@@ -18,6 +18,7 @@ void initFood( Food *food ) {
     food->rect.h = SIZE;
     generateFood( food );
 
+    // Set food movement
     food->FoodDIR = DOWN;
     food->FoodBuffDir = LEFT;
 
@@ -37,6 +38,36 @@ void drawFood( Food *food ) {
 void generateFood( Food *food ) {
     food->rect.x = ( rand() % 40 ) * SIZE ;
     food->rect.y = ( rand() % 30 ) * SIZE;
+
+    Snake *head = pSnake->snake;
+    Snake *prev = NULL;
+
+    SDL_Point food_coo = {food->rect.x, food->rect.y};
+
+    while ( head ) {
+        // Ensures food will spawn on empty spaces
+        if ( SDL_PointInRect( &food_coo, &head->rect ) ) {
+            generateFood( food );
+            return;
+        }
+        Snake *body = head->body;
+        Snake *prev = NULL;
+
+        while ( body ) {
+            if ( SDL_PointInRect( &food_coo, &body->rect ) ) {
+                generateFood( food );
+                return;
+            }
+            prev = body;
+            body = prev->body;
+        }
+        if ( SDL_PointInRect( &food_coo, &head->tail->rect ) ) {
+            generateFood( food );
+            return;
+        }
+        prev = head;
+        head = prev->nextHead;
+    }
 }
 
 void checkFoodhasEaten( Snake *snake, Food *food ) {
@@ -45,14 +76,15 @@ void checkFoodhasEaten( Snake *snake, Food *food ) {
     }
     if ( SDL_HasIntersection( &snake->rect, &food->rect) == SDL_TRUE ) {
         generateFood( food );
-        growBody( snake );
+        growSnake( snake, 1 );
+        // growBody( snake );
         // snake->SPEED += SIZE;
     }
 }
 
 void moveFood( Food *food ) {
     // Moves food based on keyboard input
-    if ( !food ) {
+    if ( !food || !foodAlive ) {
         return;
     }
 
@@ -62,18 +94,19 @@ void moveFood( Food *food ) {
         food->LASTDIR = food->FoodDIR;
     }
 
+    int pixels = (int) (food->FoodSPEED * delta_time);
     switch ( food->FoodDIR ) {
         case LEFT:
-            food->rect.x -= (int) (food->FoodSPEED * delta_time);
+            food->rect.x -= pixels;
             break;
         case RIGHT:
-            food->rect.x += (int) (food->FoodSPEED * delta_time);
+            food->rect.x += pixels;
             break;
         case UP:
-            food->rect.y -= (int) (food->FoodSPEED * delta_time);
+            food->rect.y -= pixels;
             break;
         case DOWN:
-            food->rect.y += (int) (food->FoodSPEED * delta_time);
+            food->rect.y += pixels;
             break;
         default:
             break;

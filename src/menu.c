@@ -76,15 +76,18 @@ void createTexture( text *pText, char *string, bool query, int x, int y, int opt
     pText->surface = TTF_RenderText_Solid( font, string, *text_color );
     pText->texture = SDL_CreateTextureFromSurface( renderer, pText->surface );
 
+    // Set option value
     pText->option = option;
 
+    // Set rect for texture
     pText->rect.w = 200;
     pText->rect.h = 50;
     pText->rectColor = PALEWHITE;
 
     if ( query ) SDL_QueryTexture( pText->texture, NULL, NULL, &pText->rect.w, &pText->rect.h );
 
-    pText->rect.x = ( x == WIDTH ) ? ( WIDTH / 2 ) -  ( pText->rect.w / 2 ) : x;
+    // Center rect if x == WIDTH or out of bounds
+    pText->rect.x = ( x <= WIDTH ) ? ( WIDTH / 2 ) -  ( pText->rect.w / 2 ) : x;
     pText->rect.y = y;
 }
 
@@ -120,6 +123,7 @@ void listen_menu() {
             }
         }
     }
+
     else if ( event.type == SDL_MOUSEMOTION ) {
         SDL_Point mousePos = {event.motion.x, event.motion.y};
         checkMousePos( mousePos, texts );
@@ -127,7 +131,7 @@ void listen_menu() {
 }
 
 text *getCommand( SDL_Point point, text *pText ) {
-    // Returns the text pointer when mouse clicked text's rect
+    // Returns the text pointer if mouse clicked is inside text's rect
     text *current = pText;
     text *prev = NULL;
 
@@ -141,13 +145,35 @@ text *getCommand( SDL_Point point, text *pText ) {
     return NULL;
 }
 
+void highlightText( text *pText ) {
+    // Highlights selected text
+    if ( currentHighlighted ) 
+    {
+        // Change color of selected text if it clicked different from previous one
+        if ( currentHighlighted->option != pText->option && pText->option != 0 ) {
+            pText->rectColor = ORANGE;
+
+            // Reset previous highlighted rect color
+            currentHighlighted->rectColor = PALEWHITE;
+            currentHighlighted = pText;
+        }
+    }
+
+    // Directly set the clicked text rect to activated COLOR is previous highlighted is NULL
+    else if ( !currentHighlighted && pText->option != 0 ) {
+        // Activated COLOR
+        pText->rectColor = ORANGE;
+        currentHighlighted = pText;
+    }
+}
+
 void checkMousePos( SDL_Point mousepos, text *pText ) {
     // Highlights whem mouse hover over text
     text *current = pText;
     text *prev = NULL;
 
     while ( current ) {
-        // Change text rect color if point is inside text rect
+        // Highlights hovered text with Green
         if ( SDL_PointInRect( &mousepos, &current->rect ) && current != currentHighlighted && current->option != 0 ) {
             current->rectColor = GREEN;
             return;
@@ -162,21 +188,6 @@ void checkMousePos( SDL_Point mousepos, text *pText ) {
     }
 }
 
-void highlightText( text *pText ) {
-    if ( currentHighlighted ) {
-        if ( currentHighlighted->option != pText->option && pText->option != 0 ) {
-            // Change color
-            pText->rectColor = ORANGE;
-            // Reset previous highlighted rect color
-            currentHighlighted->rectColor = PALEWHITE;
-            currentHighlighted = pText;
-        }
-    }
-    else if ( !currentHighlighted && pText->option != 0 ) {
-        pText->rectColor = ORANGE;
-        currentHighlighted = pText;
-    }
-}
 
 // Render
 void show_texts( text *pText ) {
@@ -185,17 +196,7 @@ void show_texts( text *pText ) {
     text *prev = NULL;
 
     while ( current ) {
-        switch ( current->rectColor ) {
-            case PALEWHITE:
-                SDL_SetRenderDrawColor( renderer , 200, 200, 200, 255 );
-                break;
-            case ORANGE:
-                SDL_SetRenderDrawColor( renderer, 255, 165, 0, 255 );
-                break;
-            case GREEN:
-                SDL_SetRenderDrawColor( renderer, 0, 255, 0, 255 );
-                break;
-        }
+        setRenderColor( current->rectColor );
         SDL_RenderCopy( renderer, current->texture, NULL, &current->rect );
         SDL_RenderDrawRect( renderer, &current->rect );
 

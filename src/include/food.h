@@ -15,5 +15,7 @@ typedef struct Food {
 } Food ;
 Food *pFood;
 
+bool foodAlive;
+
 
 #endif
