@@ -37,12 +37,26 @@ typedef struct Snakes {
     int numSnakes;  // player count
     Snake *snake;   // player list
 } Snakes;
+
+typedef struct PlayerKey {
+    Uint8 LEFTKEY;
+    Uint8 RIGHTKEY;
+    Uint8 UPKEY;
+    Uint8 DOWNKEY;
+} PlayerKey;
+
 Snakes *pSnake;
+PlayerKey p1Key;
+PlayerKey p2Key;
+PlayerKey p3Key;
+PlayerKey p4Key;
 
 SDL_Point STARTPOS1;
 SDL_Point STARTPOS2;
 SDL_Point STARTPOS3;
 SDL_Point STARTPOS4;
+
+
 
 
 #endif

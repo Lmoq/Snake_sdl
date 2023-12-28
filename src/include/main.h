@@ -1,14 +1,17 @@
 #ifndef MAIN_H
 #define MAIN_H
 #include <stdbool.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL.h>
 
 #define SIZE 20
 #define FPS 100
 #define FRAME_TIME (float)1000 / FPS
-#define WIDTH SIZE * 60
-#define HEIGHT SIZE * 35
-#define PSPEED SIZE * 15
+#define COLS 60
+#define ROWS 35
+#define WIDTH SIZE * COLS
+#define HEIGHT SIZE * ROWS
+#define PSPEED SIZE * 16
 #define FSPEED PSPEED
 
 #define BLUE 200
@@ -32,13 +35,14 @@ SDL_KeyCode keycode;
 SDL_Renderer *renderer;
 SDL_Window *gameWindow;
 
+const Uint8 *keyCodes;
+
 bool running;
 bool menu;
 
 int last_frame_time;
 int time_to_wait;
 int playerNum;
-
 float delta_time;
 
 void setRenderColor( int COLOR );

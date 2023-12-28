@@ -29,6 +29,8 @@ void growSnake( Snake *head, int size );
 void growBody( Snake *body );
 void deleteSnake( Snakes  *pSnake_ );
 
+void setupKeys();
+
 // Render
 void drawSnakes( Snakes *pSnake_ );
 void drawTrails( Snake *head, int color );

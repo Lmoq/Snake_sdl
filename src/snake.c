@@ -30,7 +30,6 @@ void initSnake( Snakes *pSnake_ , int p1Color) {
 
     // Add a snake to list
     Snake *head = malloc(sizeof (*head));
-    pSnake_->numSnakes ++;
 
     if ( !head ) {
         fprintf( stderr, "Malloc failed" );
@@ -149,6 +148,7 @@ void addSnake( Snakes *pSnake_ ) {
     head->rect.h = SIZE;
 
     pSnake_->numSnakes ++;
+    printf("numsnakes : %d", pSnake->numSnakes);
     // Initialize snake lead trail
     switch ( pSnake_->numSnakes ) {
         case 1:
@@ -170,6 +170,7 @@ void addSnake( Snakes *pSnake_ ) {
             head->BUFFDIR = LEFT;
             head->SPEED = PSPEED;
             head->COLOR = RED;
+            printf("P2 Red : %d\n", RED);
             break;
 
         case 3:
@@ -292,6 +293,17 @@ void growBody( Snake *head ) {
     
     // Connect added body to last
     prevBody->body = body;
+}
+
+void setupKeys() {
+    // Player 1 keys
+    p1Key.LEFTKEY = SDL_SCANCODE_A;
+    p1Key.RIGHTKEY = SDL_SCANCODE_D;
+    p1Key.UPKEY = SDL_SCANCODE_W;
+    p1Key.DOWNKEY = SDL_SCANCODE_S;
+
+    // Player 2 keys
+
 }
 
 void deleteSnake( Snakes *pSnake_ ) {

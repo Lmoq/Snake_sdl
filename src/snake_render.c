@@ -50,7 +50,7 @@ void drawTrails( Snake *head, int color ) {
 
     while ( body != NULL ) {
         // Render color
-        setRenderColor( body->COLOR );
+        setRenderColor( color );
         SDL_RenderDrawRect( renderer, &body->rect );
         // SDL_RenderFillRect( renderer, &body->rect );
 

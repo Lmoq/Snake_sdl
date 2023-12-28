@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
     running = true;
     menu = true;
     foodAlive = false;
+    keyCodes = NULL;
     gameWindow = NULL;
     renderer = NULL;
     pSnake = NULL;
@@ -41,6 +42,7 @@ int main(int argc, char *argv[]) {
         return 1; 
     } 
 
+    setupKeys();
     setup();
 
     // Game loop
@@ -112,6 +114,7 @@ void render() {
     }
 
     // Buffer objects to draw
+    drawGrid( renderer );
     drawSnakes( pSnake );
     drawFood( pFood );
 
@@ -127,64 +130,96 @@ void listen() {
         running = false;
     }
     else if ( event.type == SDL_KEYDOWN ) {
-        keycode = event.key.keysym.sym;
-        switch ( keycode ) {
-            // Change direction
-            // Player 1
-            case SDLK_a:
+        keyCodes = SDL_GetKeyboardState(NULL);
+        if ( pSnake->snake ) 
+        {
+            if ( keyCodes[ p1Key.LEFTKEY ] )
+            {
                 pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->BUFFDIR;
-                break;
-            case SDLK_d:
+            }
+            else if ( keyCodes[ p1Key.RIGHTKEY ] ) 
+            {
                 pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->BUFFDIR;
-                break;
-            case SDLK_w:
+            }
+            else if ( keyCodes[ p1Key.UPKEY ] ) 
+            {
                 pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != DOWN ) ? UP : pSnake->snake->BUFFDIR;
-                break;
-            case SDLK_s:
+            }
+            else if ( keyCodes[ p1Key.DOWNKEY ] ) 
+            {
                 pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != UP ) ? DOWN : pSnake->snake->BUFFDIR;
-                break;
-        }   
-            
-        // Player 2
-        if ( playerNum >= 1 && pSnake->snake->nextHead ) {
-            switch ( keycode ) {
-                case SDLK_LEFT:
-                    pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->nextHead->BUFFDIR;
-                    break;
-                case SDLK_RIGHT:
-                    pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->nextHead->BUFFDIR;
-                    break;
-                case SDLK_UP:
-                    pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != DOWN ) ? UP : pSnake->snake->nextHead->BUFFDIR;
-                    break;
-                case SDLK_DOWN:
-                    pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != UP ) ? DOWN : pSnake->snake->nextHead->BUFFDIR;
-                    break;
             }
         }
-        // Player 3
-        if ( playerNum >= 2 && pSnake->snake->nextHead->nextHead ) {
-            switch ( keycode ) {
-                // Food controls
-                case SDLK_j:
-                    pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->nextHead->nextHead->BUFFDIR;
-                    break;
-                case SDLK_l:
-                    pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->nextHead->nextHead->BUFFDIR;
-                    break;
-                case SDLK_i:
-                    pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != DOWN ) ? UP : pSnake->snake->nextHead->nextHead->BUFFDIR;
-                    break;
-                case SDLK_k:
-                    pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != UP ) ? DOWN : pSnake->snake->nextHead->nextHead->BUFFDIR;
-                    break;
+        SDL_ResetKeyboard();
 
-                default:
-                    break;
-            }
-        }
-        //  Food
-        // if ( pFood ) {
+
+        // keycode = event.key.keysym.sym;
+        // switch ( keycode ) {
+        //     // Change direction
+        //     // Player 1
+        //     case SDLK_a:
+        //         pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->BUFFDIR;
+        //         break;
+        //     case SDLK_d:
+        //         pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->BUFFDIR;
+        //         break;
+        //     case SDLK_w:
+        //         pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != DOWN ) ? UP : pSnake->snake->BUFFDIR;
+        //         break;
+        //     case SDLK_s:
+        //         pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != UP ) ? DOWN : pSnake->snake->BUFFDIR;
+        //         break;
+        //     case SDLK_q:
+        //         growSnake( pSnake->snake, 200 );
+        //         break;
+    
+        // }   
+            
+        // // Player 2
+        // if ( playerNum >= 1 && pSnake->snake->nextHead ) {
+        //     switch ( keycode ) {
+
+        //         case SDLK_LEFT:
+        //             pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->nextHead->BUFFDIR;
+        //             break;
+        //         case SDLK_RIGHT:
+        //             pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->nextHead->BUFFDIR;
+        //             break;
+        //         case SDLK_UP:
+        //             pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != DOWN ) ? UP : pSnake->snake->nextHead->BUFFDIR;
+        //             break;
+        //         case SDLK_DOWN:
+        //             pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != UP ) ? DOWN : pSnake->snake->nextHead->BUFFDIR;
+        //             break;
+        //         case SDLK_0:
+        //             growSnake( pSnake->snake->nextHead, 200 );
+        //             break;
+            
+        //     }
+        // }
+        // // Player 3
+        // if ( playerNum >= 2 && pSnake->snake->nextHead->nextHead ) {
+        //     switch ( keycode ) {
+        //         // Food controls
+        //         case SDLK_j:
+        //             pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->nextHead->nextHead->BUFFDIR;
+        //             break;
+        //         case SDLK_l:
+        //             pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->nextHead->nextHead->BUFFDIR;
+        //             break;
+        //         case SDLK_i:
+        //             pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != DOWN ) ? UP : pSnake->snake->nextHead->nextHead->BUFFDIR;
+        //             break;
+        //         case SDLK_k:
+        //             pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != UP ) ? DOWN : pSnake->snake->nextHead->nextHead->BUFFDIR;
+        //             break;
+
+        //         default:
+        //             break;
+        //     }
+        // }
+        // //  Food
+        // if ( foodAlive ) {
         //     switch ( keycode ) {
         //         // Food controls
         //         case SDLK_j:
@@ -203,6 +238,7 @@ void listen() {
         //         default:
         //             break;
         //     }
+        // }
     }
     if ( menu ) {
         listen_menu();

@@ -7,8 +7,8 @@ void drawGrid( SDL_Renderer * renderer ) {
     int x_coo;
     int y_coo;
     // Draw grid lines
-    for (int i = 0; i < 40; i ++) {   
-        for (int j = 0; j < 30; j ++) {
+    for (int i = 0; i < COLS; i ++) {   
+        for (int j = 0; j < ROWS; j ++) {
             x_coo = i * SIZE;
             y_coo = j * SIZE;
             // Draw vertical lines & horizontal lines

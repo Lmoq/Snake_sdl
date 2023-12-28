@@ -36,8 +36,8 @@ void drawFood( Food *food ) {
 }
 
 void generateFood( Food *food ) {
-    food->rect.x = ( rand() % 40 ) * SIZE ;
-    food->rect.y = ( rand() % 30 ) * SIZE;
+    food->rect.x = ( rand() % COLS ) * SIZE ;
+    food->rect.y = ( rand() % ROWS ) * SIZE;
 
     Snake *head = pSnake->snake;
     Snake *prev = NULL;
@@ -51,15 +51,15 @@ void generateFood( Food *food ) {
             return;
         }
         Snake *body = head->body;
-        Snake *prev = NULL;
+        Snake *prevBody = NULL;
 
         while ( body ) {
             if ( SDL_PointInRect( &food_coo, &body->rect ) ) {
                 generateFood( food );
                 return;
             }
-            prev = body;
-            body = prev->body;
+            prevBody = body;
+            body = prevBody->body;
         }
         if ( SDL_PointInRect( &food_coo, &head->tail->rect ) ) {
             generateFood( food );
