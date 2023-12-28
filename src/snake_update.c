@@ -19,6 +19,7 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
     while ( head != NULL ) {
         // Skip dead snakes
         if ( head->snakeDead && head && head->body ) {
+            respawnSnake( head );
             prevHead = head;
             head = prevHead->nextHead;
             continue;
@@ -60,6 +61,7 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
                 break;
         }
         moveTail( head );
+        checkSnakePos ( head );
 
         // Check collisions
         checkSnakeCol( head , head);
@@ -84,6 +86,10 @@ void moveBody( Snake *head ) {
 
                 // Sync body trails and tail to head
                 // And updates head LASTLASTDIR only after passing a chunk after turns
+                updateTrailsHeadLastdir( body, head, prevBody );
+            } 
+            else if ( prevBody->rect.x - body->rect.x > 50 ) {
+                body->rect.x += WIDTH;
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
@@ -126,6 +132,10 @@ void moveBodyTrails( Snake *body, Snake *head ) {
                 // Makes sures succeeding trails will follow before updating body lastdir
                 // So they will only turn at a specific chunk
                 followTrails( body_body, head, prevBody );
+                if ( prevBody->rect.x - body_body->rect.x > 50 ) {
+                    body_body->rect.x += WIDTH;
+                    followTrails( body_body, head, prevBody );
+                }
                 break;
 
             case RIGHT:
@@ -334,4 +344,27 @@ void checkOtherCol( Snake *head ) {
         prev = otherHead;
         otherHead = prev->nextHead;
     }
+}
+
+void checkSnakePos( Snake *head ) {
+    switch ( head->DIRECTION ) {
+        case LEFT:
+            if ( head->rect.x < 0 ) {
+                head->rect.x += WIDTH;
+            }
+            break;
+    }
+}
+
+void respawnSnake( Snake *head ) {
+    if ( !head->deathTimeStamp ) {
+        head->deathTimeStamp = SDL_GetTicks64();
+    } else {
+        int timePassed = SDL_GetTicks64() - head->deathTimeStamp;
+        if ( timePassed > 1000 ) {
+
+        }
+
+    }
+
 }

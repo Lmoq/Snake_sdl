@@ -115,6 +115,7 @@ void initSnake( Snakes *pSnake_ , int p1Color) {
     // Set movement
     head->LASTDIR = head->BUFFDIR;
     head->snakeDead = false;
+    head->deathTimeStamp = 0;
 
     // Add to list
     pSnake_->snake = head;
@@ -219,6 +220,7 @@ void addSnake( Snakes *pSnake_ ) {
 
     head->LASTDIR = head->BUFFDIR;
     head->snakeDead = false;
+    head->deathTimeStamp = 0;
 
     // Add to list
     prev->nextHead = head;
@@ -303,6 +305,16 @@ void setupKeys() {
     p1Key.DOWNKEY = SDL_SCANCODE_S;
 
     // Player 2 keys
+    p2Key.LEFTKEY = SDL_SCANCODE_LEFT;
+    p2Key.RIGHTKEY = SDL_SCANCODE_RIGHT;
+    p2Key.UPKEY = SDL_SCANCODE_UP;
+    p2Key.DOWNKEY = SDL_SCANCODE_DOWN;
+
+    // Player 3 keys
+    p3Key.LEFTKEY = SDL_SCANCODE_J;
+    p3Key.RIGHTKEY = SDL_SCANCODE_L;
+    p3Key.UPKEY = SDL_SCANCODE_I;
+    p3Key.DOWNKEY = SDL_SCANCODE_K;
 
 }
 

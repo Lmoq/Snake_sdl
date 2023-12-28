@@ -19,10 +19,12 @@ typedef struct Snake {
     int LASTDIR;
     int LASTLASTDIR;
     
+    // Collision checks
     SDL_Point pointHead;
     SDL_Rect rect;
 
     bool snakeDead;
+    int deathTimeStamp;
 
     // Body will grow then tail is attached
     struct Snake *body;
