@@ -61,7 +61,6 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
                 break;
         }
         moveTail( head );
-        checkSnakePos ( head );
 
         // Check collisions
         checkSnakeCol( head , head);
@@ -114,14 +113,7 @@ void moveBody( Snake *head ) {
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
-        case THROUGHLEFT:
-            if ( body->rect.x <= 0 ) {
-                body->rect.x += WIDTH;
-                moveBodyTrails( body, head );
-                updateTail( head );
-                body->LASTDIR = prevBody->LASTDIR;
-            }
-            break;
+        
 
 
         default:
@@ -156,14 +148,6 @@ void moveBodyTrails( Snake *body, Snake *head ) {
             case DOWN:
                 body_body->rect.y += SIZE;
                 followTrails( body_body, head, prevBody );
-                break;
-
-            case THROUGHLEFT:
-                if ( body->rect.x <= 0 ) {
-                    body->rect.x += WIDTH;
-                    moveBodyTrails( body, head );
-                    body->LASTDIR = prevBody->LASTDIR;
-                }
                 break;
 
             default:
@@ -359,16 +343,6 @@ void checkOtherCol( Snake *head ) {
     }
 }
 
-void checkSnakePos( Snake *head ) {
-    switch ( head->DIRECTION ) {
-        case LEFT:
-            if ( head->rect.x < 0 ) {
-                head->rect.x += WIDTH;
-                head->LASTDIR = THROUGHLEFT;
-            }
-            break;
-    }
-}
 
 void respawnSnake( Snake *head ) {
     if ( !head->deathTimeStamp ) {
