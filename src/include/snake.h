@@ -9,6 +9,11 @@
 #define DOWN 104
 #define STARTSIZE 2
 
+#define THROUGHLEFT 105
+#define THROUGHRIGHT 106
+#define THROUGHUP 107
+#define THROUGHDOWN 108
+
 typedef struct Snake {
     int SPEED;
     int DIRECTION;

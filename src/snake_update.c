@@ -114,6 +114,15 @@ void moveBody( Snake *head ) {
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
+        case THROUGHLEFT:
+            if ( body->rect.x <= 0 ) {
+                body->rect.x += WIDTH;
+                moveBodyTrails( body, head );
+                updateTail( head );
+                body->LASTDIR = prevBody->LASTDIR;
+            }
+            break;
+
 
         default:
             break;
@@ -132,10 +141,6 @@ void moveBodyTrails( Snake *body, Snake *head ) {
                 // Makes sures succeeding trails will follow before updating body lastdir
                 // So they will only turn at a specific chunk
                 followTrails( body_body, head, prevBody );
-                if ( prevBody->rect.x - body_body->rect.x > 50 ) {
-                    body_body->rect.x += WIDTH;
-                    followTrails( body_body, head, prevBody );
-                }
                 break;
 
             case RIGHT:
@@ -151,6 +156,14 @@ void moveBodyTrails( Snake *body, Snake *head ) {
             case DOWN:
                 body_body->rect.y += SIZE;
                 followTrails( body_body, head, prevBody );
+                break;
+
+            case THROUGHLEFT:
+                if ( body->rect.x <= 0 ) {
+                    body->rect.x += WIDTH;
+                    moveBodyTrails( body, head );
+                    body->LASTDIR = prevBody->LASTDIR;
+                }
                 break;
 
             default:
@@ -351,6 +364,7 @@ void checkSnakePos( Snake *head ) {
         case LEFT:
             if ( head->rect.x < 0 ) {
                 head->rect.x += WIDTH;
+                head->LASTDIR = THROUGHLEFT;
             }
             break;
     }
