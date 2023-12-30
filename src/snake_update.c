@@ -81,14 +81,14 @@ void moveBody( Snake *head ) {
 
     switch ( prevBody->LASTDIR ) {
         case LEFT:
+            // Transition if body get past the display limit
+            if ( body->rect.x + SIZE <= 0 ) {
+                body->rect.x = WIDTH;
+            }
             if ( prevBody->rect.x + SIZE <= body->rect.x ) {
                 // Ensures body trails can only move chunk by chunk
                 body->rect.x -= SIZE;
 
-                // Transition if body get past the display limit
-                if ( body->rect.x + SIZE <= 0 ) {
-                    body->rect.x = WIDTH;
-                }
                 // Sync body trails and tail to head
                 // And updates head LASTLASTDIR only after passing a chunk after turns
                 updateTrailsHeadLastdir( body, head, prevBody );
@@ -97,37 +97,31 @@ void moveBody( Snake *head ) {
             break;
 
         case RIGHT:
-            if ( prevBody->rect.x >= body->rect.x + SIZE ) {
+            if ( body->rect.x >= WIDTH ) {
+                body->rect.x = -SIZE;
+            }
+            if ( prevBody->rect.x >= body->rect.x + SIZE) {
                 body->rect.x += SIZE;
-
-                if ( body->rect.x >= WIDTH ) {
-                    body->rect.x = -SIZE;
-                }
-
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
 
         case UP:
+            if ( body->rect.y + SIZE <= 0 ) {
+                body->rect.y = HEIGHT;
+            }
             if ( prevBody->rect.y + SIZE <= body->rect.y ) {
                 body->rect.y -= SIZE;
-
-                if ( body->rect.y + SIZE <= 0 ) {
-                    body->rect.y = HEIGHT;
-                }
-
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
 
         case DOWN:
+            if ( body->rect.y >= HEIGHT ) {
+                body->rect.y = -SIZE;
+            }
             if ( prevBody->rect.y >= body->rect.y + SIZE ) {
                 body->rect.y += SIZE;
-
-                if ( body->rect.y >= HEIGHT ) {
-                    body->rect.y = -SIZE;
-                }
-
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
@@ -147,45 +141,37 @@ void moveBodyTrails( Snake *body, Snake *head ) {
     if ( body_body != NULL ) {
         switch ( prevBody->LASTDIR ) {
             case LEFT:
-                body_body->rect.x -= SIZE;
-                
                 // Transition if body get past the display limit
                 if ( body_body->rect.x + SIZE <= 0 ) {
                     body_body->rect.x = WIDTH;
                 }
-                
+                body_body->rect.x -= SIZE;
                 // Makes sures succeeding trails will follow before updating body lastdir
                 // So they will only turn at a specific chunk
                 followTrails( body_body, head, prevBody );
                 break;
 
             case RIGHT:
-                body_body->rect.x += SIZE;
-
                 if ( body_body->rect.x >= WIDTH ) {
                     body_body->rect.x = -SIZE;
                 }
-
+                body_body->rect.x += SIZE;
                 followTrails( body_body, head, prevBody );
                 break;
 
             case UP:
-                body_body->rect.y -= SIZE;
-
                 if ( body_body->rect.y + SIZE <= 0 ) {
                     body_body->rect.y = HEIGHT;
                 }
-
+                body_body->rect.y -= SIZE;
                 followTrails( body_body, head, prevBody );
                 break;
 
             case DOWN:
-                body_body->rect.y += SIZE;
-
                 if ( body_body->rect.y >= HEIGHT ) {
                     body_body->rect.y = -SIZE;
                 }
-
+                body_body->rect.y += SIZE;
                 followTrails( body_body, head, prevBody );
                 break;
 
@@ -318,6 +304,9 @@ void chunkTurn( Snake *head ) {
 }
 
 void checkSnakeBounds( Snake *head ) {
+    // printf("head.body.lastdir : %d ", head->body->LASTDIR);
+    // printf("\r");
+    // fflush(stdout);
     switch ( head->DIRECTION ) {
         case LEFT:
             if ( head->rect.x + SIZE <= 0 ) {
