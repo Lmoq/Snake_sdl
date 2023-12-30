@@ -27,6 +27,8 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
 
         // Follow trails
         moveBody( head );
+        // Transition if snake get past the display limit
+        checkSnakeBounds( head );
 
         // Lock snake movement
         if ( head->BUFFDIR != head->DIRECTION ) {
@@ -83,19 +85,25 @@ void moveBody( Snake *head ) {
                 // Ensures body trails can only move chunk by chunk
                 body->rect.x -= SIZE;
 
+                // Transition if body get past the display limit
+                if ( body->rect.x + SIZE <= 0 ) {
+                    body->rect.x = WIDTH;
+                }
                 // Sync body trails and tail to head
                 // And updates head LASTLASTDIR only after passing a chunk after turns
                 updateTrailsHeadLastdir( body, head, prevBody );
             } 
-            else if ( prevBody->rect.x - body->rect.x > 50 ) {
-                body->rect.x += WIDTH;
-                updateTrailsHeadLastdir( body, head, prevBody );
-            }
+
             break;
 
         case RIGHT:
             if ( prevBody->rect.x >= body->rect.x + SIZE ) {
                 body->rect.x += SIZE;
+
+                if ( body->rect.x >= WIDTH ) {
+                    body->rect.x = -SIZE;
+                }
+
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
@@ -103,6 +111,11 @@ void moveBody( Snake *head ) {
         case UP:
             if ( prevBody->rect.y + SIZE <= body->rect.y ) {
                 body->rect.y -= SIZE;
+
+                if ( body->rect.y + SIZE <= 0 ) {
+                    body->rect.y = HEIGHT;
+                }
+
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
@@ -110,6 +123,11 @@ void moveBody( Snake *head ) {
         case DOWN:
             if ( prevBody->rect.y >= body->rect.y + SIZE ) {
                 body->rect.y += SIZE;
+
+                if ( body->rect.y >= HEIGHT ) {
+                    body->rect.y = -SIZE;
+                }
+
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
@@ -130,6 +148,12 @@ void moveBodyTrails( Snake *body, Snake *head ) {
         switch ( prevBody->LASTDIR ) {
             case LEFT:
                 body_body->rect.x -= SIZE;
+                
+                // Transition if body get past the display limit
+                if ( body_body->rect.x + SIZE <= 0 ) {
+                    body_body->rect.x = WIDTH;
+                }
+                
                 // Makes sures succeeding trails will follow before updating body lastdir
                 // So they will only turn at a specific chunk
                 followTrails( body_body, head, prevBody );
@@ -137,22 +161,37 @@ void moveBodyTrails( Snake *body, Snake *head ) {
 
             case RIGHT:
                 body_body->rect.x += SIZE;
+
+                if ( body_body->rect.x >= WIDTH ) {
+                    body_body->rect.x = -SIZE;
+                }
+
                 followTrails( body_body, head, prevBody );
                 break;
 
             case UP:
                 body_body->rect.y -= SIZE;
+
+                if ( body_body->rect.y + SIZE <= 0 ) {
+                    body_body->rect.y = HEIGHT;
+                }
+
                 followTrails( body_body, head, prevBody );
                 break;
 
             case DOWN:
                 body_body->rect.y += SIZE;
+
+                if ( body_body->rect.y >= HEIGHT ) {
+                    body_body->rect.y = -SIZE;
+                }
+
                 followTrails( body_body, head, prevBody );
                 break;
 
             default:
                 break;
-        } 
+        }
     }
 }
 
@@ -278,11 +317,37 @@ void chunkTurn( Snake *head ) {
     }
 }
 
+void checkSnakeBounds( Snake *head ) {
+    switch ( head->DIRECTION ) {
+        case LEFT:
+            if ( head->rect.x + SIZE <= 0 ) {
+                head->rect.x = WIDTH;
+            }
+            break;
+        case RIGHT:
+            if ( head->rect.x >= WIDTH ) {
+                head->rect.x = -SIZE;
+            }
+            break;
+        case UP:
+            if ( head->rect.y + SIZE <= 0 ) {
+                head->rect.y = HEIGHT;
+            }
+            break;
+        case DOWN:
+            if ( head->rect.y >= HEIGHT) {
+                head->rect.y = -SIZE;
+            }
+            break;
+    }
+}
+
 void checkSnakeCol( Snake *head, Snake *targetHead ) {
     Snake *body = head->body->body;
     Snake *prev;
 
     switch ( targetHead->DIRECTION ) {
+        // Set the point to check to be the center front of the snake head
         case LEFT:
             targetHead->pointHead.x = targetHead->rect.x;
             targetHead->pointHead.y = targetHead->rect.y + (SIZE / 2);
@@ -352,7 +417,5 @@ void respawnSnake( Snake *head ) {
         if ( timePassed > 1000 ) {
 
         }
-
     }
-
 }
