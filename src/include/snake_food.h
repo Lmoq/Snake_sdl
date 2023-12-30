@@ -38,7 +38,6 @@ void drawTrails( Snake *head, int color );
 // Update
 void checkSnakeCol( Snake *head , Snake *targetHead);
 void checkOtherCol( Snake *head );
-void checkSnakeBounds( Snake *head );
 void chunkTurn( Snake *head );
 void moveSnakes( Snakes *pSnake_, Food *food );
 void moveBody( Snake *head );
@@ -46,6 +45,7 @@ void moveBodyTrails( Snake *body, Snake *head );
 void moveTail( Snake *head );
 void respawnSnake( Snake *head );
 void updateTail( Snake *head );
+void wrapAroundMap( Snake *head );
 
 
 //  Food

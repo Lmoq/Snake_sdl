@@ -28,7 +28,7 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
         // Follow trails
         moveBody( head );
         // Transition if snake get past the display limit
-        checkSnakeBounds( head );
+        wrapAroundMap( head );
 
         // Lock snake movement
         if ( head->BUFFDIR != head->DIRECTION ) {
@@ -81,7 +81,7 @@ void moveBody( Snake *head ) {
 
     switch ( prevBody->LASTDIR ) {
         case LEFT:
-            // Transition if body get past the display limit
+            // Makes sure trails will follow when head wraps around map
             if ( body->rect.x + SIZE <= 0 ) {
                 body->rect.x = WIDTH;
             }
@@ -93,7 +93,6 @@ void moveBody( Snake *head ) {
                 // And updates head LASTLASTDIR only after passing a chunk after turns
                 updateTrailsHeadLastdir( body, head, prevBody );
             } 
-
             break;
 
         case RIGHT:
@@ -141,7 +140,7 @@ void moveBodyTrails( Snake *body, Snake *head ) {
     if ( body_body != NULL ) {
         switch ( prevBody->LASTDIR ) {
             case LEFT:
-                // Transition if body get past the display limit
+                // Wrap around map
                 if ( body_body->rect.x + SIZE <= 0 ) {
                     body_body->rect.x = WIDTH;
                 }
@@ -303,33 +302,6 @@ void chunkTurn( Snake *head ) {
     }
 }
 
-void checkSnakeBounds( Snake *head ) {
-    // printf("head.body.lastdir : %d ", head->body->LASTDIR);
-    // printf("\r");
-    // fflush(stdout);
-    switch ( head->DIRECTION ) {
-        case LEFT:
-            if ( head->rect.x + SIZE <= 0 ) {
-                head->rect.x = WIDTH;
-            }
-            break;
-        case RIGHT:
-            if ( head->rect.x >= WIDTH ) {
-                head->rect.x = -SIZE;
-            }
-            break;
-        case UP:
-            if ( head->rect.y + SIZE <= 0 ) {
-                head->rect.y = HEIGHT;
-            }
-            break;
-        case DOWN:
-            if ( head->rect.y >= HEIGHT) {
-                head->rect.y = -SIZE;
-            }
-            break;
-    }
-}
 
 void checkSnakeCol( Snake *head, Snake *targetHead ) {
     Snake *body = head->body->body;
@@ -406,5 +378,31 @@ void respawnSnake( Snake *head ) {
         if ( timePassed > 1000 ) {
 
         }
+    }
+}
+
+void wrapAroundMap( Snake *head ) { 
+    // Simulates a wrap around effect
+    switch ( head->DIRECTION ) {
+        case LEFT:
+            if ( head->rect.x + SIZE <= 0 ) {
+                head->rect.x = WIDTH;
+            }
+            break;
+        case RIGHT:
+            if ( head->rect.x >= WIDTH ) {
+                head->rect.x = -SIZE;
+            }
+            break;
+        case UP:
+            if ( head->rect.y + SIZE <= 0 ) {
+                head->rect.y = HEIGHT;
+            }
+            break;
+        case DOWN:
+            if ( head->rect.y >= HEIGHT) {
+                head->rect.y = -SIZE;
+            }
+            break;
     }
 }
