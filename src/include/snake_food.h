@@ -23,7 +23,7 @@ do { \
 
 //   Snake
 // Allocation and deallocation
-void initSnake( Snakes *pSnake_, int p1Color );
+Snakes *initSnake();
 void addSnake( Snakes *pSnake_ );
 void growSnake( Snake *head, int size );
 void growBody( Snake *body );

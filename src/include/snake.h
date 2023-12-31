@@ -14,6 +14,8 @@
 #define THROUGHUP 107
 #define THROUGHDOWN 108
 
+#define MAXPLAYERS 3
+
 typedef struct Snake {
     int SPEED;
     int DIRECTION;
@@ -36,13 +38,11 @@ typedef struct Snake {
     struct Snake *bodyEnd;
     struct Snake *tail;
 
-    // Extends to any number of snakes
-    struct Snake *nextHead;
 } Snake;
 
 typedef struct Snakes {
     int numSnakes;  // player count
-    Snake *snake;   // player list
+    Snake *snake;   // snake list
 } Snakes;
 
 typedef struct PlayerKey {
@@ -62,9 +62,6 @@ SDL_Point STARTPOS1;
 SDL_Point STARTPOS2;
 SDL_Point STARTPOS3;
 SDL_Point STARTPOS4;
-
-
-
 
 #endif
 
