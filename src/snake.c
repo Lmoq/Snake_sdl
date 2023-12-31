@@ -34,18 +34,15 @@ Snakes *initSnake( ) {
 
     // Fill slots with snakes
     for (int i = 0; i < MAXPLAYERS; i ++) {
-        snakelist->snake[i] = addSnake( snakelist );
+        snakelist->numSnakes ++;
+        snakelist->snake[i] = addSnake( snakelist->numSnakes );
     }
 
     return snakelist;
 }
 
-Snake *addSnake( Snakes *snakelist ) {
+Snake *addSnake( int snakeIndex ) {
     // Initlialize a snakelist slots
-    if ( !snakelist ) {
-        return NULL;
-    }
-    
     Snake *head = malloc( sizeof(* head) );
 
     if ( !head ) {
@@ -58,10 +55,8 @@ Snake *addSnake( Snakes *snakelist ) {
     head->rect.w = SIZE;
     head->rect.h = SIZE;
 
-    snakelist->numSnakes ++;
-
     // Set snake start pos
-    setSnakePos( head, snakelist->numSnakes );
+    setSnakePos( head, snakeIndex );
     
     // Reset pointers
     head->body = NULL;
@@ -86,6 +81,7 @@ Snake *addSnake( Snakes *snakelist ) {
     head->LASTDIR = head->BUFFDIR;
     head->snakeDead = false;
     head->deathTimeStamp = 0;
+    head->snakeIndex = snakeIndex;
 
     head->tail->rect.w = SIZE;
     head->tail->rect.h = SIZE;
@@ -231,42 +227,39 @@ void setupKeys() {
     p3Key.DOWNKEY = SDL_SCANCODE_K;
 }
 
-void deleteSnake( Snakes *snakelist ) {
-    // Delete snake head to tail
+void deleteHead( Snake *head ) {
+    // Deletes head, bodies and tail
+    if (!head) {
+        printf("Trying to delete null head\n");
+        return;
+    }
+    Snake *body = head->body;
+    Snake *prevBody = NULL;
+
+    while (body) {
+        prevBody = body;
+        body = prevBody->body;
+
+        free(prevBody);
+    }
+    free( head->tail );
+    free( head );
+}
+
+void deleteSnakes( Snakes *snakelist ) {
+    // Deletes all snakes
     if ( !snakelist ) {
         printf("pSnake not initalized ...\nreturning...\n");
         return;
     }
-    int objects = 0;
     int index = 0;
-
     Snake *head = NULL;
     
-
     while ( index < playerNum ) {
         head = snakelist->snake[index];
-
-        Snake *body = head->body;
-        Snake *prevBody = NULL;
-
-        while ( body != NULL ) {
-            prevBody = body;
-            body = prevBody->body;
-
-            // Release all head bodies
-            free( prevBody );
-            objects ++;
-        }
+        // Deletes head and trails
+        deleteHead( head );
         index ++;
-
-        // Release all snake heads and tails
-        free( head );
-        free( head->tail );
-        objects += 2;
     }
-
     free(snakelist);
-    objects ++;
-
-    printf("Freed addr : %d\n", objects);
 }

@@ -20,6 +20,13 @@ void drawSnakes( Snakes *snakelist ) {
     while ( index < playerNum ) {
         head = snakelist->snake[index];
 
+        printf("Head[%d].COLOR : %d\n", index, head->COLOR);
+
+        if ( !head ) {
+            index ++;
+            continue;
+        }
+
         // Use snake color for render
         setRenderColor( head->COLOR );
 

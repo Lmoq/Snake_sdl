@@ -25,6 +25,7 @@ typedef struct Snake {
     // Previous directions
     int LASTDIR;
     int LASTLASTDIR;
+    int snakeIndex;
     
     // Collision checks
     SDL_Point pointHead;

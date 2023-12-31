@@ -24,13 +24,14 @@ do { \
 //   Snake
 // Allocation and deallocation
 Snakes *initSnake();
-Snake *addSnake( Snakes *snakelist );
+Snake *addSnake( int snakeIndex );
 void growSnake( Snake *head, int size );
 void growBody( Snake *body );
 void setSnakePos( Snake *head , int snakeIndex);
 void setupKeys();
 
-void deleteSnake( Snakes  *pSnake_ );
+void deleteHead( Snake *head );
+void deleteSnakes( Snakes  *pSnake_ );
 
 // Render
 void drawSnakes( Snakes *pSnake_ );
@@ -44,7 +45,7 @@ void moveSnakes( Snakes *pSnake_, Food *food );
 void moveBody( Snake *head );
 void moveBodyTrails( Snake *body, Snake *head );
 void moveTail( Snake *head );
-void respawnSnake( Snake *head );
+void respawnSnake( Snake **head );
 void updateTail( Snake *head );
 void wrapAroundMap( Snake *head );
 

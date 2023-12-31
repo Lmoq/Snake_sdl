@@ -168,7 +168,7 @@ void terminate() {
     SDL_DestroyWindow(gameWindow);
     SDL_Quit();
 
-    deleteSnake( SnakeList );
+    deleteSnakes( SnakeList );
     deleteFood( pFood );
     quitTTF();
 }

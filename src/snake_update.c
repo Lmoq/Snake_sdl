@@ -21,7 +21,7 @@ void moveSnakes( Snakes *snakelist, Food *food ) {
         head = snakelist->snake[index];
 
         if ( head->snakeDead && head && head->body ) {
-            // respawnSnake( head );
+            respawnSnake( &head );
             index ++;
             continue;
         }
@@ -364,13 +364,30 @@ void checkOtherCol( Snake *head , Snakes *snakelist) {
 }
 
 
-void respawnSnake( Snake *head ) {
-    if ( !head->deathTimeStamp ) {
-        head->deathTimeStamp = SDL_GetTicks64();
+void respawnSnake( Snake **head ) {
+    if ( !(*head)->deathTimeStamp ) {
+       (*head)->deathTimeStamp = SDL_GetTicks64();
     } else {
-        int timePassed = SDL_GetTicks64() - head->deathTimeStamp;
+        int timePassed = SDL_GetTicks64() - (*head)->deathTimeStamp;
         if ( timePassed > 1000 ) {
+            printf("deleeing snake\n");
+            (*head)->snakeDead = false;
 
+            // Reset *head
+            Snake *newHead = malloc (sizeof( *newHead ));
+            if ( !newHead ) {
+                fprintf( stderr, "Malloc failed\n" );
+                running = false;
+                return;
+            }
+            // Recreate snake with snakeIndex as identity
+            newHead = addSnake( (*head)->snakeIndex );
+            
+            Snake *deadSnake = *head;
+            deleteHead( deadSnake );
+    
+            *head = newHead;
+            printf("newhead.color : %d\n", (*head)->COLOR);
         }
     }
 }
