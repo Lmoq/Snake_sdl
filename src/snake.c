@@ -104,6 +104,7 @@ void setSnakePos( Snake *head , int snakeIndex) {
             head->DIRECTION = DOWN;
             head->BUFFDIR = RIGHT;
             head->SPEED = PSPEED;
+            head->COLOR = BLUE;
             break;
 
         case 2:

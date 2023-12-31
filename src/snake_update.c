@@ -330,15 +330,12 @@ void checkSnakeCol( Snake *head, Snake *targetHead ) {
 
     // Check if head touched another snake head
     if ( targetHead->COLOR != head->COLOR && SDL_PointInRect( &targetHead->pointHead, &head->rect ) == SDL_TRUE ) {
-        printf("touched head\n");
         targetHead->snakeDead = true;
     }
 
     // Check if head touched a its own or others body
     while ( body != NULL ) {
         if ( SDL_PointInRect( &targetHead->pointHead, &body->rect ) ) {
-            printf("Touched body currentdir : %d\npoint %d:%d rect start %d:%d", 
-            targetHead->DIRECTION, targetHead->pointHead.x, targetHead->pointHead.y, body->rect.x, body->rect.y);
             targetHead->snakeDead = true;
         }
         prev = body;
@@ -347,7 +344,6 @@ void checkSnakeCol( Snake *head, Snake *targetHead ) {
 
     // Check if target head touch its own or other tail
     if ( SDL_PointInRect( &targetHead->pointHead, &head->tail->rect ) ) {
-        printf("Touched head\n");
         targetHead->snakeDead = true;
     }
 }

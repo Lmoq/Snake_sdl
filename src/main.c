@@ -117,16 +117,16 @@ void render() {
 
 void checkKeys( Snake* head, const Uint8 *keycodes, PlayerKey playerkey ) {
     // Modify head.BUFFDIR based on key press
-    if ( keyCodes[ p1Key.LEFTKEY ] ) {
+    if ( keyCodes[ playerkey.LEFTKEY ] ) {
         head->BUFFDIR = ( head->DIRECTION != RIGHT ) ? LEFT : head->BUFFDIR;
     }
-    else if ( keyCodes[ p1Key.RIGHTKEY ] ) {
+    else if ( keyCodes[ playerkey.RIGHTKEY ] ) {
         head->BUFFDIR = ( head->DIRECTION != LEFT ) ? RIGHT : head->BUFFDIR;
     }
-    else if ( keyCodes[ p1Key.UPKEY ] ) {
+    else if ( keyCodes[ playerkey.UPKEY ] ) {
         head->BUFFDIR = ( head->DIRECTION != DOWN ) ? UP : head->BUFFDIR;
     }
-    else if ( keyCodes[ p1Key.DOWNKEY ] ) {
+    else if ( keyCodes[ playerkey.DOWNKEY ] ) {
         head->BUFFDIR = ( head->DIRECTION != UP ) ? DOWN : head->BUFFDIR;
     }
 }
