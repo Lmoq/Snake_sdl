@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     keyCodes = NULL;
     gameWindow = NULL;
     renderer = NULL;
-    pSnake = NULL;
+    SnakeList = NULL;
 
     playerNum = 0;
 
@@ -61,15 +61,8 @@ void setup() {
         setup_menu();
         return;
     }
-
-    // Initilize snake 
-    pSnake = malloc( sizeof( *pSnake ) );
-    initSnake( pSnake , BLUE);
-
-    // Add players
-    for ( int i = 0; i < playerNum; i ++ ) {
-        addSnake( pSnake );
-    }
+    // Initilize snakes
+    SnakeList = initSnake();
 
     // Add food
     pFood = malloc( sizeof( *pFood ));
@@ -95,7 +88,7 @@ void update() {
     }
     
     // Main game update
-    moveSnakes( pSnake, pFood );
+    moveSnakes( SnakeList, pFood );
     
     // Update food movement
     moveFood( pFood );
@@ -115,11 +108,27 @@ void render() {
 
     // Buffer objects to draw
     drawGrid( renderer );
-    drawSnakes( pSnake );
+    drawSnakes( SnakeList );
     drawFood( pFood );
 
     // Display buffer
     SDL_RenderPresent( renderer );
+}
+
+void checkKeys( Snake* head, const Uint8 *keycodes, PlayerKey playerkey ) {
+    // Modify head.BUFFDIR based on key press
+    if ( keyCodes[ p1Key.LEFTKEY ] ) {
+        head->BUFFDIR = ( head->DIRECTION != RIGHT ) ? LEFT : head->BUFFDIR;
+    }
+    else if ( keyCodes[ p1Key.RIGHTKEY ] ) {
+        head->BUFFDIR = ( head->DIRECTION != LEFT ) ? RIGHT : head->BUFFDIR;
+    }
+    else if ( keyCodes[ p1Key.UPKEY ] ) {
+        head->BUFFDIR = ( head->DIRECTION != DOWN ) ? UP : head->BUFFDIR;
+    }
+    else if ( keyCodes[ p1Key.DOWNKEY ] ) {
+        head->BUFFDIR = ( head->DIRECTION != UP ) ? DOWN : head->BUFFDIR;
+    }
 }
 
 void listen() {
@@ -132,53 +141,18 @@ void listen() {
     else if ( event.type == SDL_KEYDOWN ) {
         keyCodes = SDL_GetKeyboardState(NULL);
         // Player 1
-        if ( pSnake->snake ) 
-        {
-            if ( keyCodes[ p1Key.LEFTKEY ] ) {
-                pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->BUFFDIR;
-            }
-            else if ( keyCodes[ p1Key.RIGHTKEY ] ) {
-                pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->BUFFDIR;
-            }
-            else if ( keyCodes[ p1Key.UPKEY ] ) {
-                pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != DOWN ) ? UP : pSnake->snake->BUFFDIR;
-            }
-            else if ( keyCodes[ p1Key.DOWNKEY ] ) {
-                pSnake->snake->BUFFDIR = ( pSnake->snake->DIRECTION != UP ) ? DOWN : pSnake->snake->BUFFDIR;
-            }
+        if ( SnakeList->snake[0] != NULL ) {
+            checkKeys( SnakeList->snake[0], keyCodes, p1Key );
         }
         // Player 2
-        if ( playerNum >= 1 ) 
-        {
-            if ( keyCodes[ p2Key.LEFTKEY ] ) {
-                pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->nextHead->BUFFDIR;
-            }
-            else if ( keyCodes[ p2Key.RIGHTKEY ] ) {
-                pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->nextHead->BUFFDIR;
-            }
-            else if ( keyCodes[ p2Key.UPKEY ] ) {
-                pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != DOWN ) ? UP : pSnake->snake->nextHead->BUFFDIR;
-            }
-            else if ( keyCodes[ p2Key.DOWNKEY ] ) {
-                pSnake->snake->nextHead->BUFFDIR = ( pSnake->snake->nextHead->DIRECTION != UP ) ? DOWN : pSnake->snake->nextHead->BUFFDIR;
-            }
+        if ( SnakeList->snake[1] != NULL ) {
+            checkKeys( SnakeList->snake[1], keyCodes, p2Key );
         }
         // Player 3
-        if ( playerNum >= 2 ) 
-        {
-            if ( keyCodes[ p3Key.LEFTKEY ] ) {
-                pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != RIGHT ) ? LEFT : pSnake->snake->nextHead->nextHead->BUFFDIR;
-            }
-            else if ( keyCodes[ p3Key.RIGHTKEY ] ) {
-                pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != LEFT ) ? RIGHT : pSnake->snake->nextHead->nextHead->BUFFDIR;
-            }
-            else if ( keyCodes[ p3Key.UPKEY ] ) {
-                pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != DOWN ) ? UP : pSnake->snake->nextHead->nextHead->BUFFDIR;
-            }
-            else if ( keyCodes[ p3Key.DOWNKEY ] ) {
-                pSnake->snake->nextHead->nextHead->BUFFDIR = ( pSnake->snake->nextHead->nextHead->DIRECTION != UP ) ? DOWN : pSnake->snake->nextHead->nextHead->BUFFDIR;
-            }
+        if ( SnakeList->snake[2] != NULL ) {
+            checkKeys( SnakeList->snake[2], keyCodes, p3Key );
         }
+        
         SDL_ResetKeyboard();
 
         
@@ -188,12 +162,13 @@ void listen() {
     }  
 }
 
+
 void terminate() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(gameWindow);
     SDL_Quit();
 
-    deleteSnake( pSnake );
+    deleteSnake( SnakeList );
     deleteFood( pFood );
     quitTTF();
 }

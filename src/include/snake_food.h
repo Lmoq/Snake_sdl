@@ -24,12 +24,13 @@ do { \
 //   Snake
 // Allocation and deallocation
 Snakes *initSnake();
-void addSnake( Snakes *pSnake_ );
+Snake *addSnake( Snakes *snakelist );
 void growSnake( Snake *head, int size );
 void growBody( Snake *body );
-void deleteSnake( Snakes  *pSnake_ );
-
+void setSnakePos( Snake *head , int snakeIndex);
 void setupKeys();
+
+void deleteSnake( Snakes  *pSnake_ );
 
 // Render
 void drawSnakes( Snakes *pSnake_ );
@@ -37,7 +38,7 @@ void drawTrails( Snake *head, int color );
 
 // Update
 void checkSnakeCol( Snake *head , Snake *targetHead);
-void checkOtherCol( Snake *head );
+void checkOtherCol( Snake *head , Snakes *snakelist);
 void chunkTurn( Snake *head );
 void moveSnakes( Snakes *pSnake_, Food *food );
 void moveBody( Snake *head );
@@ -49,9 +50,8 @@ void wrapAroundMap( Snake *head );
 
 
 //  Food
-
 void initFood( Food *food );
-void generateFood( Food *food );
+void generateFood( Food *food, Snakes *snakelist );
 void drawFood( Food *food );
 
 void checkFoodhasEaten( Snake *snake, Food *food );

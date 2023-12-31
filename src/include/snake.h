@@ -38,11 +38,13 @@ typedef struct Snake {
     struct Snake *bodyEnd;
     struct Snake *tail;
 
+    struct Snake *nextHead;
+
 } Snake;
 
 typedef struct Snakes {
     int numSnakes;  // player count
-    Snake *snake;   // snake list
+    Snake **snake;   // snake list
 } Snakes;
 
 typedef struct PlayerKey {
@@ -52,7 +54,7 @@ typedef struct PlayerKey {
     Uint8 DOWNKEY;
 } PlayerKey;
 
-Snakes *pSnake;
+Snakes *SnakeList;
 PlayerKey p1Key;
 PlayerKey p2Key;
 PlayerKey p3Key;
@@ -64,5 +66,3 @@ SDL_Point STARTPOS3;
 SDL_Point STARTPOS4;
 
 #endif
-
-

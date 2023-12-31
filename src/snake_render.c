@@ -9,15 +9,17 @@
 
 
 //  Render
-void drawSnakes( Snakes *pSnake_ ) {
-    if (!pSnake_) {
+void drawSnakes( Snakes *snakelist ) {
+    if (!snakelist) {
         return;
     }
 
-    Snake *head = pSnake_->snake;
-    Snake *prevHead;
+    Snake *head = NULL;
+    int index = 0;
+    
+    while ( index < playerNum ) {
+        head = snakelist->snake[index];
 
-    while ( head != NULL ) {
         // Use snake color for render
         setRenderColor( head->COLOR );
 
@@ -33,8 +35,7 @@ void drawSnakes( Snakes *pSnake_ ) {
         // Draw trails
         drawTrails( head, head->COLOR);
 
-        prevHead = head;
-        head = prevHead->nextHead;
+        index ++;
     } 
 
 }

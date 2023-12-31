@@ -103,19 +103,19 @@ void listen_menu() {
             switch( pText->option ) {
                 case ONEPLAYER:
                     printf("1P selected\n");
-                    playerNum = 0;
+                    playerNum = 1;
                     break;
                 case TWOPLAYER:
                     printf("2P selected\n");
-                    playerNum = 1;
+                    playerNum = 2;
                     break;
                 case THREEPLAYER:
                     printf("3P selected\n");
-                    playerNum = 2;
+                    playerNum = 3;
                     break;
                 case FOURPLAYER:
                     printf("4P selected\n");
-                    playerNum = 3;
+                    playerNum = 4;
                     break;
                 case START:
                     menu = false;

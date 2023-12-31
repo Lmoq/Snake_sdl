@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL.h>
+#include "snake.h"
 
 #define SIZE 20
 #define FPS 100
@@ -49,6 +50,7 @@ void setRenderColor( int COLOR );
 
 void setup();
 void listen();
+void checkKeys( Snake *head, const Uint8 *keycodes, PlayerKey playerkey );
 void update();
 void render();
 void terminate();

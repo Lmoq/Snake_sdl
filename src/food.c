@@ -16,7 +16,7 @@ void initFood( Food *food ) {
 
     food->rect.w = SIZE;
     food->rect.h = SIZE;
-    generateFood( food );
+    generateFood( food, SnakeList);
 
     // Set food movement
     food->FoodDIR = DOWN;
@@ -35,19 +35,21 @@ void drawFood( Food *food ) {
     // SDL_RenderFillRect( renderer, &food->rect );
 }
 
-void generateFood( Food *food ) {
+void generateFood( Food *food, Snakes *snakelist) {
     food->rect.x = ( rand() % COLS ) * SIZE ;
     food->rect.y = ( rand() % ROWS ) * SIZE;
 
-    Snake *head = pSnake->snake;
-    Snake *prev = NULL;
-
+    Snake *head = NULL;
     SDL_Point food_coo = {food->rect.x, food->rect.y};
 
-    while ( head ) {
+    int index = 0;
+    
+    while ( index < playerNum ) {
+        head = snakelist->snake[index];
+
         // Ensures food will spawn on empty spaces
         if ( SDL_PointInRect( &food_coo, &head->rect ) ) {
-            generateFood( food );
+            generateFood( food, SnakeList );
             return;
         }
         Snake *body = head->body;
@@ -55,18 +57,17 @@ void generateFood( Food *food ) {
 
         while ( body ) {
             if ( SDL_PointInRect( &food_coo, &body->rect ) ) {
-                generateFood( food );
+                generateFood( food, SnakeList );
                 return;
             }
             prevBody = body;
             body = prevBody->body;
         }
         if ( SDL_PointInRect( &food_coo, &head->tail->rect ) ) {
-            generateFood( food );
+            generateFood( food, SnakeList );
             return;
         }
-        prev = head;
-        head = prev->nextHead;
+        index ++;
     }
 }
 
@@ -75,7 +76,7 @@ void checkFoodhasEaten( Snake *snake, Food *food ) {
         return;
     }
     if ( SDL_HasIntersection( &snake->rect, &food->rect) == SDL_TRUE ) {
-        generateFood( food );
+        generateFood( food , SnakeList);
         growSnake( snake, 1 );
         // growBody( snake );
         // snake->SPEED += SIZE;

@@ -8,20 +8,21 @@
 #include "utils.h"
 
 
-void moveSnakes( Snakes *pSnake_, Food *food ) {
-    if ( !pSnake_ ) {
+void moveSnakes( Snakes *snakelist, Food *food ) {
+    if ( !snakelist ) {
         return;
     }
 
-    Snake *head = pSnake_->snake;
-    Snake *prevHead;
-
-    while ( head != NULL ) {
+    Snake *head = NULL;
+    int index = 0;
+    
+    while ( index < playerNum ) {
         // Skip dead snakes
+        head = snakelist->snake[index];
+
         if ( head->snakeDead && head && head->body ) {
-            respawnSnake( head );
-            prevHead = head;
-            head = prevHead->nextHead;
+            // respawnSnake( head );
+            index ++;
             continue;
         }
 
@@ -66,11 +67,10 @@ void moveSnakes( Snakes *pSnake_, Food *food ) {
 
         // Check collisions
         checkSnakeCol( head , head);
-        checkOtherCol( head );
+        checkOtherCol( head , snakelist);
         checkFoodhasEaten( head, food );
 
-        prevHead = head;
-        head = prevHead->nextHead;
+        index ++;
     }
 }
 
@@ -124,9 +124,7 @@ void moveBody( Snake *head ) {
                 updateTrailsHeadLastdir( body, head, prevBody );
             }
             break;
-        
-
-
+    
         default:
             break;
     }
@@ -354,18 +352,18 @@ void checkSnakeCol( Snake *head, Snake *targetHead ) {
     }
 }
 
-void checkOtherCol( Snake *head ) {
+void checkOtherCol( Snake *head , Snakes *snakelist) {
     // Check collition with other snake head
-    Snake *otherHead = pSnake->snake;
-    Snake *prev = NULL;
+    Snake *otherHead = NULL;
+    int index = 0;
 
-    while ( otherHead ) {
+    while ( index < playerNum ) {
+        otherHead = snakelist->snake[index];
         // They are different snake if they have different COLOR
         if ( head->COLOR != otherHead->COLOR ) {
             checkSnakeCol( otherHead, head );
         }
-        prev = otherHead;
-        otherHead = prev->nextHead;
+        index ++;
     }
 }
 
